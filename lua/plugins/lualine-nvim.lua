@@ -7,16 +7,18 @@
 
 return {
 	"nvim-lualine/lualine.nvim",
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+	},
+
 	config = function()
 		require("lualine").setup({
 			options = {
-				-- theme = "melange",
-				theme = "nightfox",
+				theme = "auto",
 				icons_enabled = true,
 				section_separators = { left = "", right = "" },
-				component_separators = "|",
+				component_separators = { left = "|", right = "|" },
 			},
 		})
 	end,
-	dependencies = { "nvim-tree/nvim-web-devicons" },
 }

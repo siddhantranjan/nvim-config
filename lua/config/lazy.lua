@@ -43,11 +43,5 @@ require("lazy").setup({
 			"netrwPlugin",
 		},
 	},
-	install = {
-		colorscheme = {
-			-- "melange"
-			"nightfox,",
-		},
-	},
 	checker = { enabled = true },
 })

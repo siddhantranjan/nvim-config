@@ -51,3 +51,8 @@ vim.keymap.set("n", "<leader>pa", function()
 	vim.fn.setreg("+", path)
 	print("file:", path)
 end, { desc = "Copy full file path" })
+
+vim.keymap.set("n", "<leader>mb", "<cmd>XcodebuildBuild<CR>", { desc = "Mobile Build" })
+vim.keymap.set("n", "<leader>mr", "<cmd>XcodebuildRun<CR>", { desc = "Mobile Run" })
+vim.keymap.set("n", "<leader>mp", "<cmd>XcodebuildPicker<CR>", { desc = "Mobile Picker" })
+vim.keymap.set("n", "<leader>mc", "<cmd>XcodebuildClean<CR>", { desc = "Mobile Clean" })

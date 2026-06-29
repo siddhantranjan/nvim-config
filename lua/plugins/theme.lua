@@ -9,35 +9,83 @@ return {
 	{
 		"xiyaowong/nvim-transparent",
 		lazy = false,
-		priority = 999,
+		priority = 1000,
 		opts = {
 			extra_groups = {
+				"NormalFloat",
+				"FloatBorder",
+				"TelescopeNormal",
+				"TelescopeBorder",
+				"TelescopePromptNormal",
+				"TelescopePromptBorder",
 				"NvimTreeNormal",
 				"NvimTreeNormalNC",
-				"NvimTreeSignColumn",
 				"NvimTreeEndOfBuffer",
+				"NvimTreeSignColumn",
 				"NvimTreeWinSeparator",
 			},
 		},
 	},
+
 	{
-		"EdenEast/nightfox.nvim",
+		"rebelot/kanagawa.nvim",
 		lazy = false,
 		priority = 999,
 		config = function()
-			local palette = require("nightfox.palette").load("duskfox")
+			require("kanagawa").setup({
+				compile = true,
+				transparent = true,
+				dimInactive = true,
 
-			require("nightfox").setup({
-				options = {
-					transparent = false,
-				},
-				groups = {
-					duskfox = {
-						Visual = { bg = palette.bg1 },
+				theme = "dragon",
+
+				colors = {
+					theme = {
+						dragon = {
+							ui = {
+								bg_gutter = "none",
+							},
+						},
 					},
 				},
+
+				overrides = function(colors)
+					local theme = colors.theme
+
+					return {
+						NormalFloat = { bg = "NONE" },
+						FloatBorder = {
+							bg = "NONE",
+							fg = theme.ui.special,
+						},
+
+						Pmenu = {
+							fg = theme.ui.shade0,
+							bg = "NONE",
+						},
+
+						PmenuSel = {
+							fg = "NONE",
+							bg = theme.ui.bg_p2,
+						},
+
+						CursorLine = {
+							bg = theme.ui.bg_p1,
+						},
+
+						Visual = {
+							bg = theme.ui.bg_p2,
+						},
+
+						TelescopeTitle = {
+							fg = theme.ui.special,
+							bold = true,
+						},
+					}
+				end,
 			})
-			vim.cmd("colorscheme duskfox")
+
+			vim.cmd.colorscheme("kanagawa")
 		end,
 	},
 }

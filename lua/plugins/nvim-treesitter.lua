@@ -29,13 +29,15 @@ return {
 			"markdown",
 			"markdown_inline",
 			"python",
+			"tsx",
 			"rust",
 			"svelte",
 			"solidity",
+			"swift",
 			"typescript",
 			"vue",
 			"yaml",
-			"ruby"
+			"ruby",
 		}
 
 		local config = require("nvim-treesitter.config")
