@@ -13,9 +13,10 @@ return {
 					enabled = true,
 					auto_trigger = true,
 					keymap = {
-						accept = "<M-l>", -- accept suggestion
-						next = "<M-]>",
-						prev = "<M-[>",
+						accept = "<C-y>",
+						next = "<C-n>",
+						prev = "<C-p>",
+						dismiss = "<C-e>",
 					},
 				},
 				panel = {
