@@ -2,6 +2,7 @@ return {
 	"stevearc/conform.nvim",
 	opts = {
 		formatters_by_ft = {
+			dart = { "dart_format" },
 			lua = { "stylua" },
 			-- Conform will run multiple formatters sequentially
 			python = { "isort", "black" },
@@ -19,4 +20,3 @@ return {
 		},
 	},
 }
-

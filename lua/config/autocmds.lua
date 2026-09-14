@@ -30,17 +30,12 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- format on save using efm langserver and configured formatters
-local lsp_fmt_group = vim.api.nvim_create_augroup("FormatOnSaveGroup", {})
+-- Conform owns formatting; this autocmd only removes trailing whitespace before it runs.
+local trim_whitespace_group = vim.api.nvim_create_augroup("TrimTrailingWhitespace", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
-	group = lsp_fmt_group,
+	group = trim_whitespace_group,
 	callback = function()
 		require("mini.trailspace").trim()
-		local efm = vim.lsp.get_clients({ name = "efm" })
-		if vim.tbl_isempty(efm) then
-			return
-		end
-		vim.lsp.buf.format({ name = "efm", async = true })
 	end,
 })
 
@@ -66,5 +61,32 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.signcolumn = "no"
 		vim.opt_local.scrollbind = false
 		vim.opt_local.cursorbind = false
+	end,
+})
+
+-- Dart's formatter and style guide use two-space indentation and an 80-column page width.
+local dart_options = vim.api.nvim_create_augroup("DartOptions", {})
+vim.api.nvim_create_autocmd("FileType", {
+	group = dart_options,
+	pattern = "dart",
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.expandtab = true
+		vim.opt_local.colorcolumn = "80"
+	end,
+})
+
+-- pubspec.yaml and other YAML files conventionally use two-space indentation.
+local yaml_options = vim.api.nvim_create_augroup("YamlOptions", {})
+vim.api.nvim_create_autocmd("FileType", {
+	group = yaml_options,
+	pattern = "yaml",
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.expandtab = true
 	end,
 })

@@ -57,8 +57,68 @@ M.on_attach = function(event)
 		end, opts)
 	end
 
+	-- Flutter/Dart workflow. These buffer-local mappings intentionally mirror the global Xcode
+	-- mobile mappings so the same keys operate on the mobile toolchain for the current file.
+	if client.name == "dartls" then
+		keymap("n", "<leader>mr", "<cmd>FlutterRun<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Run" }))
+		keymap("n", "<leader>mD", "<cmd>FlutterDebug<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Debug" }))
+		keymap(
+			"n",
+			"<leader>mR",
+			"<cmd>FlutterReload<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Hot Reload" })
+		)
+		keymap(
+			"n",
+			"<leader>ms",
+			"<cmd>FlutterRestart<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Hot Restart" })
+		)
+		keymap("n", "<leader>mq", "<cmd>FlutterQuit<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Quit" }))
+		keymap(
+			"n",
+			"<leader>md",
+			"<cmd>FlutterDevices<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Devices" })
+		)
+		keymap(
+			"n",
+			"<leader>me",
+			"<cmd>FlutterEmulators<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Emulators" })
+		)
+		keymap(
+			"n",
+			"<leader>mo",
+			"<cmd>FlutterOutlineToggle<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Outline" })
+		)
+		keymap("n", "<leader>ml", "<cmd>FlutterLogToggle<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Logs" }))
+		keymap(
+			"n",
+			"<leader>mt",
+			"<cmd>FlutterDevTools<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter DevTools" })
+		)
+		keymap(
+			"n",
+			"<leader>mT",
+			"<cmd>FlutterOpenDevTools<CR>",
+			vim.tbl_extend("force", opts, { desc = "Open Flutter DevTools" })
+		)
+		keymap(
+			"n",
+			"<leader>mi",
+			"<cmd>FlutterInspectWidget<CR>",
+			vim.tbl_extend("force", opts, { desc = "Flutter Inspect Widget" })
+		)
+		keymap("n", "<leader>mp", "<cmd>FlutterPubGet<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Pub Get" }))
+		keymap("n", "<leader>ma", "<cmd>FlutterAttach<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Attach" }))
+		keymap("n", "<leader>mx", "<cmd>FlutterDetach<CR>", vim.tbl_extend("force", opts, { desc = "Flutter Detach" }))
+	end
+
 	-- === DAP keymaps ===
-	if client.name == "rust-analyzer" then -- debugging only configured for Rust
+	if client.name == "rust-analyzer" or client.name == "dartls" then
 		local dap = require("dap")
 		keymap("n", "<leader>dc", dap.continue, opts) -- Continue / Start
 		keymap("n", "<leader>do", dap.step_over, opts) -- Step over
