@@ -11,6 +11,20 @@
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
+-- Tree-sitter compiles parsers with the environment inherited by Neovim.  On some
+-- macOS releases `clang` can pick a Command Line Tools SDK that is newer than its
+-- linker and fail while parsing libSystem.tbd.  Prefer the SDK from the selected
+-- full Xcode installation when it is available; this also keeps parser builds
+-- independent of a stale CLT SDK symlink.
+if vim.uv.os_uname().sysname == "Darwin" and vim.fn.executable("xcode-select") == 1 then
+	local developer_dir = vim.fn.systemlist({ "xcode-select", "-p" })[1]
+	local xcode_sdk = developer_dir
+		and developer_dir .. "/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+	if xcode_sdk and (vim.uv or vim.loop).fs_stat(xcode_sdk) then
+		vim.env.SDKROOT = xcode_sdk
+	end
+end
+
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
