@@ -1,19 +1,29 @@
 -- ================================================================================================
 -- TITLE : ccc.nvim
+-- ABOUT : Colour picker and inline colour highlighter.
 -- LINKS :
 --   > github : https://github.com/uga-rosa/ccc.nvim
--- ABOUT : colour picker & highlighter for neovim
 -- ================================================================================================
 
 return {
 	"uga-rosa/ccc.nvim",
-	config = function()
-		require("ccc").setup({
+	cmd = { "CccPick", "CccConvert", "CccHighlighterToggle" },
+	ft = { "css", "scss", "sass", "html", "javascript", "typescript", "javascriptreact", "typescriptreact", "lua", "dart", "svelte", "vue" },
+
+	keys = {
+		{ "<leader>cP", "<cmd>CccPick<cr>", desc = "Pick colour" },
+		{ "<leader>cH", "<cmd>CccHighlighterToggle<cr>", desc = "Toggle colour highlighting" },
+	},
+
+	opts = function()
+		return {
 			highlighter = {
-				auto_enable = true, -- enable highlight automatically
-				lsp = true, -- highlight colors from LSP too
+				auto_enable = true,
+				lsp = true, -- also render colours reported by the language server
+				max_byte = 512 * 1024, -- skip enormous files
 			},
-			highlight_mode = "virtual", -- small circles with colour next to the declaration
-		})
+			highlight_mode = "virtual", -- a swatch beside the value, not a background fill
+			virtual_symbol = require("utils.icons").misc.colour,
+		}
 	end,
 }

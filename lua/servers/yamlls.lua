@@ -16,9 +16,10 @@ return function(capabilities)
 					["https://json.schemastore.org/docker-compose.json"] = "docker-compose*.yml",
 				},
 				validate = true,
-				format = {
-					enable = true,
-				},
+				-- conform.nvim owns formatting (prettierd for yaml). Leaving this on
+				-- gives yamlls a competing formatter that surfaces via `gq` and
+				-- vim.lsp.buf.format().
+				format = { enable = false },
 			},
 		},
 		filetypes = { "yaml" },

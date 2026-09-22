@@ -1,0 +1,23 @@
+# Neovim runtime state — none of this belongs in the config repo.
+spell/
+shada/
+*.shada
+*.shada.tmp.*
+
+# Treesitter compiles parsers into the config dir on some setups.
+parser/
+
+# Kanagawa's `compile = true` writes a cache.
+colors/
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*.swo
+tags
+
+# Local overrides — keep machine-specific settings out of the repo.
+lua/config/local.lua
+.nvim.lua
+.nvimrc
+.exrc

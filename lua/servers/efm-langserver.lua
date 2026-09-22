@@ -1,87 +1,63 @@
 -- ================================================================================================
 -- TITLE : efm-langserver
--- ABOUT : a general purpose language server protocol implemented here for linters/formatters
+-- ABOUT :
+--   General purpose language server, used here as a LINTER-ONLY bridge. Formatting is owned
+--   entirely by conform.nvim (see lua/plugins/conform.lua) so that a file is never formatted
+--   twice by two different tools with two different configs.
 -- LINKS :
---   > github : https://github.com/mattn/efm-langserver
---   > configs: https://github.com/creativenull/efmls-configs-nvim/tree/main
+--   > github  : https://github.com/mattn/efm-langserver
+--   > configs : https://github.com/creativenull/efmls-configs-nvim/tree/main
 -- ================================================================================================
 
 --- @param capabilities table LSP client capabilities (from nvim-cmp)
 --- @return nil
 return function(capabilities)
-	local luacheck = require("efmls-configs.linters.luacheck") -- lua linter
-	local stylua = require("efmls-configs.formatters.stylua") -- lua formatter
-	local flake8 = require("efmls-configs.linters.flake8") -- python linter
-	local black = require("efmls-configs.formatters.black") -- python formatter
-	local go_revive = require("efmls-configs.linters.go_revive") -- go linter
-	local gofumpt = require("efmls-configs.formatters.gofumpt") -- go formatter
-	local prettier_d = require("efmls-configs.formatters.prettier_d") -- ts/js/solidity/json/docker/html/css/react/svelte/vue formatter
-	local eslint_d = require("efmls-configs.linters.eslint_d") -- ts/js/solidity/json/react/svelte/vue linter
-	local jq = require("efmls-configs.formatters.jq") -- json formatter
-	local shellcheck = require("efmls-configs.linters.shellcheck") -- bash linter
-	local shfmt = require("efmls-configs.formatters.shfmt") -- bash formatter
-	local hadolint = require("efmls-configs.linters.hadolint") -- docker linter
-	local cpplint = require("efmls-configs.linters.cpplint") -- c/cpp linter
-	local clangformat = require("efmls-configs.formatters.clang_format") -- c/cpp formatter
-	local solhint = require("efmls-configs.linters.solhint") -- solidity linter
-    -- local rubocopfmt = require("efmls-configs.formatters.rubocop") -- ruby formatter
-    local rubocoplint = require("efmls-configs.linters.rubocop") -- ruby linter
+	local luacheck = require("efmls-configs.linters.luacheck") -- lua
+	local flake8 = require("efmls-configs.linters.flake8") -- python
+	local go_revive = require("efmls-configs.linters.go_revive") -- go
+	local eslint_d = require("efmls-configs.linters.eslint_d") -- js/ts/react/svelte/vue
+	local shellcheck = require("efmls-configs.linters.shellcheck") -- bash
+	local hadolint = require("efmls-configs.linters.hadolint") -- docker
+	local cpplint = require("efmls-configs.linters.cpplint") -- c/cpp
+	local solhint = require("efmls-configs.linters.solhint") -- solidity
+	local rubocop = require("efmls-configs.linters.rubocop") -- ruby
+
+	-- NOTE: keys below are Neovim FILETYPES, not language names. `dockerfile` (not `docker`)
+	-- is the filetype Neovim assigns to a Dockerfile -- getting this wrong silently disables
+	-- the linter with no error message.
+	local languages = {
+		c = { cpplint },
+		cpp = { cpplint },
+		dockerfile = { hadolint },
+		go = { go_revive },
+		javascript = { eslint_d },
+		javascriptreact = { eslint_d },
+		lua = { luacheck },
+		python = { flake8 },
+		ruby = { rubocop },
+		sh = { shellcheck },
+		bash = { shellcheck },
+		solidity = { solhint },
+		svelte = { eslint_d },
+		typescript = { eslint_d },
+		typescriptreact = { eslint_d },
+		vue = { eslint_d },
+	}
 
 	vim.lsp.config("efm", {
 		capabilities = capabilities,
-		filetypes = {
-			"c",
-			"cpp",
-			"css",
-			"docker",
-			"go",
-			"html",
-			"javascript",
-			"javascriptreact",
-			"json",
-			"jsonc",
-			"lua",
-			"markdown",
-			"python",
-			"sh",
-			"solidity",
-			"svelte",
-			"typescript",
-			"typescriptreact",
-			"vue",
-			"ruby",
-		},
+		filetypes = vim.tbl_keys(languages),
 		init_options = {
-			documentFormatting = true,
-			documentRangeFormatting = true,
-			hover = true,
-			documentSymbol = true,
+			documentFormatting = false, -- conform.nvim owns formatting
+			documentRangeFormatting = false,
+			hover = false,
+			documentSymbol = false,
 			codeAction = true,
-			completion = true,
+			completion = false,
 		},
 		settings = {
-			languages = {
-				c = { clangformat, cpplint },
-				cpp = { clangformat, cpplint },
-				css = { prettier_d },
-				docker = { hadolint, prettier_d },
-				go = { gofumpt, go_revive },
-				html = { prettier_d },
-				javascript = { eslint_d, prettier_d },
-				javascriptreact = { eslint_d, prettier_d },
-				json = { eslint_d, jq },
-				jsonc = { eslint_d, jq },
-				lua = { luacheck, stylua },
-				markdown = { prettier_d },
-				python = { flake8, black },
-				sh = { shellcheck, shfmt },
-				solidity = { solhint, prettier_d },
-				svelte = { eslint_d, prettier_d },
-				typescript = { eslint_d, prettier_d },
-				typescriptreact = { eslint_d, prettier_d },
-				vue = { eslint_d, prettier_d },
-        		ruby = { rubocoplint }
-			},
+			rootMarkers = { ".git/" },
+			languages = languages,
 		},
 	})
 end

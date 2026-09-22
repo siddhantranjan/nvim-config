@@ -1,16 +1,20 @@
 -- ================================================================================================
--- TITLE : solidity_ls_nomicfoundation (Solidity Language Server) LSP Setup
+-- TITLE : html (HTML Language Server) LSP Setup
 -- LINKS :
---   > github: https://github.com/NomicFoundation/hardhat-vscode
+--   > github: https://github.com/microsoft/vscode-html-languageservice
 -- ================================================================================================
 
 --- @param capabilities table LSP client capabilities (typically from nvim-cmp or similar)
 --- @return nil
 return function(capabilities)
-	vim.lsp.config("solidity_ls_nomicfoundation", {
+	vim.lsp.config("html", {
 		capabilities = capabilities,
-		cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
-		filetypes = { "solidity" },
-		root_markers = { "hardhat.config.js", "hardhat.config.ts", "foundry.toml", ".git" },
+		filetypes = { "html", "templ" },
+		settings = {
+			html = {
+				format = { enable = false }, -- conform.nvim owns formatting (prettierd)
+				hover = { documentation = true, references = true },
+			},
+		},
 	})
 end
