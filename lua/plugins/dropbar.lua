@@ -19,7 +19,19 @@
 return {
 	"Bekaboo/dropbar.nvim",
 	event = { "BufReadPost", "BufNewFile" },
-	dependencies = { "nvim-mini/mini.icons" },
+	dependencies = {
+		"nvim-mini/mini.icons",
+		{
+			-- Supplies the `fzf_lib` module that dropbar's menu fuzzy-find (`i` inside a
+			-- dropdown) requires -- without it that keypress reports "fzf-lib is not
+			-- installed". It's a C library, so `make` compiles it on install; everything
+			-- else in dropbar works fine if the build fails.
+			-- telescope.nvim is already here (xcodebuild depends on it), so this also
+			-- speeds up telescope's own sorting.
+			"nvim-telescope/telescope-fzf-native.nvim",
+			build = "make",
+		},
+	},
 
 	config = function()
 		local dropbar = require("dropbar")

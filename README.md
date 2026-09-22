@@ -7,7 +7,13 @@ A modular Neovim configuration built on [lazy.nvim](https://github.com/folke/laz
 **Required**
 
 - **Neovim ≥ 0.11** — the config uses `vim.lsp.config` / `vim.lsp.enable`, `vim.diagnostic.jump`, and `vim.hl.on_yank`, none of which exist earlier.
-- `git`, `make`, a C compiler (for treesitter parsers), and a Nerd Font v3+ in your terminal.
+- `git`, `make`, a C compiler, and a Nerd Font v3+ in your terminal.
+- **`tree-sitter` CLI** — nvim-treesitter is pinned to its `main` branch, which compiles parsers through the CLI rather than shipping prebuilt ones. Without it every parser install fails with `failed to compile parser`.
+
+```sh
+xcode-select --install     # git, make, clang
+brew install tree-sitter
+```
 
 **Optional** — each is detected at startup and falls back cleanly if absent, so nothing errors:
 
