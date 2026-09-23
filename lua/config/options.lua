@@ -75,7 +75,9 @@ opt.lazyredraw = false -- Off: it breaks rendering in noice/notify-style float U
 opt.backup = false -- No backup files
 opt.writebackup = false -- No backup before overwriting
 opt.swapfile = false -- No swap files
-opt.undofile = true -- Persistent undo
+-- NOTE: 'undofile' is set further down, after the undo directory has been created and
+-- verified writable -- see the block below. Setting it here as well would be a second
+-- source of truth for the same option.
 opt.undolevels = 10000
 opt.updatetime = 300 -- CursorHold delay (drives document highlight, gitsigns blame)
 opt.timeoutlen = 500 -- Wait for a mapped sequence
@@ -91,11 +93,32 @@ opt.diffopt:append("indent-heuristic")
 
 -- Undo directory. stdpath("state") is where Neovim expects this to live; the old hardcoded
 -- ~/.local/share/nvim/undodir worked by coincidence of that being the default data dir.
+--
+-- CAREFUL with the permission argument: Lua has no octal literals, so `0700` is the DECIMAL
+-- number 700, which as a Unix mode is octal 1274 -- owner gets write but not execute, and a
+-- directory without execute cannot have files created in it. That produces
+-- "E828: Cannot open undo file for writing" on the first save of every new file.
+-- tonumber("700", 8) is the correct way to write an octal mode in Lua.
 local undodir = vim.fn.stdpath("state") .. "/undo"
+
 if vim.fn.isdirectory(undodir) == 0 then
-	vim.fn.mkdir(undodir, "p", 0700)
+	vim.fn.mkdir(undodir, "p", tonumber("700", 8))
 end
-opt.undodir = undodir
+
+-- If the directory still isn't usable, fall back to no persistent undo rather than
+-- prompting "Press ENTER" on every single write.
+if vim.fn.isdirectory(undodir) == 1 and vim.fn.filewritable(undodir) == 2 then
+	opt.undodir = undodir
+	opt.undofile = true
+else
+	opt.undofile = false
+	vim.schedule(function()
+		vim.notify(
+			("Persistent undo disabled: %s is not writable"):format(undodir),
+			vim.log.levels.WARN
+		)
+	end)
+end
 
 -- ── Behaviour ───────────────────────────────────────────────────────────────────────────────
 opt.errorbells = false -- No error sounds

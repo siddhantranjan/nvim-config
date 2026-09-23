@@ -90,7 +90,14 @@ return {
 				["<C-j>"] = cmp.mapping.select_next_item(),
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
+				-- Manually open the completion menu. Most terminals transmit Ctrl+Space
+				-- as NUL, which Neovim reads as <C-@> rather than <C-Space> -- mapping
+				-- only the latter means the key appears to do nothing. Both are bound
+				-- here, plus <C-n> as a fallback for terminals (Warp among them) that
+				-- swallow Ctrl+Space entirely.
 				["<C-Space>"] = cmp.mapping.complete(),
+				["<C-@>"] = cmp.mapping.complete(),
+				["<C-n>"] = cmp.mapping.complete(),
 				["<C-e>"] = cmp.mapping.abort(),
 				-- `select = false` means <CR> only confirms an item you explicitly
 				-- selected, so a stray Enter inserts a newline rather than a symbol.

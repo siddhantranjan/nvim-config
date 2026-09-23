@@ -5,15 +5,23 @@
 --
 -- KEY NOTE
 --   Copilot's ghost text and nvim-cmp's popup are two separate UIs in the same mode, so they
---   must not share keys. This config previously bound Copilot accept to <C-y> and dismiss to
---   <C-e> -- exactly the keys nvim-cmp's `preset.insert` uses for confirm and abort. Copilot
---   now lives on <M-…> (Alt) so the two never contend:
+--   must not share keys. Copilot originally bound accept to <C-y> and dismiss to <C-e> --
+--   exactly nvim-cmp's confirm and abort.
 --
---     <M-l>  accept suggestion        <C-y> / <CR>  confirm cmp item
---     <M-;>  accept one word          <C-e>         abort cmp
---     <M-]>  next suggestion
---     <M-[>  previous suggestion
---     <M-h>  dismiss suggestion
+--   The obvious fix is to move Copilot onto <M-…> (Alt), and that is what most configs do.
+--   It does NOT work in Warp: Warp's "Option key is Meta" setting is broken (it treats both
+--   Option keys as Meta regardless of the setting, and enabling it breaks Option+arrow word
+--   navigation) -- see warpdotdev/warp#8583 and #2364. So these are all Ctrl-based keys that
+--   every terminal transmits reliably:
+--
+--     <C-l>     accept suggestion       <C-y> / <CR>  confirm cmp item
+--     <C-]>     dismiss suggestion      <C-e>         abort cmp
+--     <C-Down>  next suggestion
+--     <C-Up>    previous suggestion
+--
+--   <C-l> is free in insert mode -- vim-tmux-navigator's <C-l> is normal-mode only, and
+--   oil's is buffer-local. <C-Up>/<C-Down> are likewise only mapped in normal mode here
+--   (window resizing). <C-[> is deliberately absent: it IS Escape.
 -- LINKS :
 --   > copilot.lua     : https://github.com/zbirenbaum/copilot.lua
 --   > CopilotChat.nvim: https://github.com/CopilotC-Nvim/CopilotChat.nvim
@@ -31,12 +39,12 @@ return {
 				hide_during_completion = true, -- get out of the way while cmp is open
 				debounce = 75,
 				keymap = {
-					accept = "<M-l>",
-					accept_word = "<M-;>",
+					accept = "<C-l>",
+					accept_word = false,
 					accept_line = false,
-					next = "<M-]>",
-					prev = "<M-[>",
-					dismiss = "<M-h>",
+					next = "<C-Down>",
+					prev = "<C-Up>",
+					dismiss = "<C-]>",
 				},
 			},
 
