@@ -30,7 +30,6 @@
   "mini.cursorword": { "branch": "main", "commit": "331bc17172e41343d39d91a4ab571d510766812e" },
   "mini.icons": { "branch": "main", "commit": "e56797f90192d81f1fda02e662fc3e8e3d775027" },
   "mini.indentscope": { "branch": "main", "commit": "d3f955f09b1a05d25d5a7740338fba2baaee41a3" },
-  "mini.map": { "branch": "main", "commit": "7e836e3679387012f84f2a389ace740d57a93a37" },
   "mini.move": { "branch": "main", "commit": "b9e452f9c83565a1520e14f7531632160f3b0170" },
   "mini.notify": { "branch": "main", "commit": "821db7d464f7a9bb8666b4ba3be7d2ed637cfcfc" },
   "mini.pairs": { "branch": "main", "commit": "4a014143fcb4e9df26198ccb3ecff3b9e77a048c" },

@@ -103,6 +103,13 @@ local undodir = vim.fn.stdpath("state") .. "/undo"
 
 if vim.fn.isdirectory(undodir) == 0 then
 	vim.fn.mkdir(undodir, "p", tonumber("700", 8))
+elseif vim.fn.filewritable(undodir) ~= 2 then
+	-- The directory already exists but isn't writable -- most likely it was created by an
+	-- earlier run of this config before the tonumber("700", 8) fix above, using the buggy
+	-- decimal 0700 (octal 1274, no execute bit) mode. mkdir() above is a no-op once the
+	-- directory exists, so that broken mode never got corrected on its own. Repair it in
+	-- place rather than leaving every :w to fail with E828 forever.
+	pcall((vim.uv or vim.loop).fs_chmod, undodir, tonumber("700", 8))
 end
 
 -- If the directory still isn't usable, fall back to no persistent undo rather than
