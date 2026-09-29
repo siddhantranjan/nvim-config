@@ -12,6 +12,14 @@ return {
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},
+	init = function()
+		-- obsidian.nvim resolves every workspace path during setup() and throws a hard
+		-- FileNotFoundError if it doesn't exist -- surfacing as lazy.nvim's "Failed to
+		-- run `config` for obsidian.nvim" the moment a markdown file is opened. `init`
+		-- runs before the plugin loads regardless of load trigger, so create the vault
+		-- folder here rather than requiring it to already exist on every machine.
+		vim.fn.mkdir(vim.fn.expand("~/codebase/Notes"), "p")
+	end,
 	opts = {
 		legacy_commands = false,
 		workspaces = {
@@ -21,8 +29,10 @@ return {
 			},
 		},
 		picker = { name = "fzf-lua" },
+		-- NOTE: `nvim_cmp` used to opt into a cmp completion source here; it isn't a
+		-- field on the current schema any more (completion is LSP-/blink.cmp-driven
+		-- upstream now), so it was silently ignored. min_chars is still honoured.
 		completion = {
-			nvim_cmp = true,
 			min_chars = 2,
 		},
 		ui = { enable = true },

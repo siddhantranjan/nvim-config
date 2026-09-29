@@ -24,6 +24,11 @@ return {
 
 			treesitter.setup({})
 
+			-- "jsonc" isn't a registered parser on the `main` branch any more (upstream is
+			-- phasing it out -- see the NOTE above). Reuse the json grammar for jsonc
+			-- filetypes so they still get treesitter highlighting rather than none.
+			vim.treesitter.language.register("json", "jsonc")
+
 			local ensure_installed = {
 				"bash",
 				"c",
@@ -42,7 +47,6 @@ return {
 				"javascript",
 				"jsdoc",
 				"json",
-				"jsonc",
 				"lua",
 				"luadoc",
 				"markdown",

@@ -124,6 +124,15 @@ M.on_attach = function(event)
 		})
 	end
 
+	-- ── Document color ──────────────────────────────────────────────────────────────────
+	-- Native replacement for flutter-tools' deprecated `lsp.color` (see the comment in
+	-- lua/plugins/flutter-tools.lua). Capability-gated like the blocks above, so it
+	-- applies to any LSP server that advertises documentColor, not just dartls. Guard
+	-- the module itself too: vim.lsp.document_color only exists from nvim 0.12 onward.
+	if vim.lsp.document_color and client:supports_method("textDocument/documentColor", bufnr) then
+		vim.lsp.document_color.enable(true, { bufnr = bufnr })
+	end
+
 	-- ── Flutter / Dart ──────────────────────────────────────────────────────────────────
 	-- Buffer-local, and deliberately mirrors the global Xcode <leader>m… mappings so the
 	-- same keys drive whichever mobile toolchain the current file belongs to.

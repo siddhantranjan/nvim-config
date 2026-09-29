@@ -7,7 +7,6 @@
 -- NOTE
 --   The `codeium` source and its lspkind entry were removed: Codeium is not installed in
 --   this config, so nvim-cmp was being handed a source name it could never resolve.
---   Copilot is the AI completion here and renders as ghost text, not as a cmp source.
 -- LINKS :
 --   > github                            : https://github.com/hrsh7th/nvim-cmp
 --   > lspkind (dep)                     : https://github.com/onsails/lspkind.nvim
@@ -153,7 +152,9 @@ return {
 			},
 
 			experimental = {
-				ghost_text = false, -- Copilot already draws ghost text; two would overlap
+				-- Copilot (which drew its own ghost text) has been removed, so cmp's
+				-- own ghost text preview no longer overlaps with anything.
+				ghost_text = true,
 			},
 		})
 

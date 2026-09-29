@@ -56,11 +56,11 @@ return {
 
 			lsp = {
 				capabilities = require("cmp_nvim_lsp").default_capabilities(),
-				color = {
-					enabled = true,
-					background = false,
-					virtual_text = true,
-				},
+				-- Plugin-managed `lsp.color` is deprecated upstream in favour of Neovim's
+				-- native document-color support and will be removed once flutter-tools
+				-- requires nvim 0.12+. The replacement lives in lua/utils/lsp.lua's
+				-- on_attach, gated on the documentColor capability, so it covers every
+				-- LSP server that advertises it, not just dartls.
 				settings = {
 					showTodos = true,
 					completeFunctionCalls = true,
