@@ -65,7 +65,6 @@ return {
 					"efm",
 
 					-- Linters
-					"cpplint",
 					"eslint_d",
 					"flake8",
 					"hadolint",
@@ -97,6 +96,7 @@ return {
 		},
 
 		"creativenull/efmls-configs-nvim", -- preconfigured efm linter definitions
+		"b0o/SchemaStore.nvim", -- JSON/YAML schemas for jsonls + yamlls (lua/servers/)
 		"hrsh7th/cmp-nvim-lsp", -- completion capabilities
 	},
 

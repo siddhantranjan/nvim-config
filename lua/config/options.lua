@@ -39,7 +39,7 @@ end
 -- ── Search ──────────────────────────────────────────────────────────────────────────────────
 opt.ignorecase = true -- Case-insensitive search
 opt.smartcase = true -- ...unless the pattern contains an uppercase letter
-opt.hlsearch = false -- Don't persist match highlighting
+opt.hlsearch = true -- Highlight every match (cleared with <Esc> or <leader>h)
 opt.incsearch = true -- Show matches as you type
 opt.inccommand = "split" -- Live preview of :substitute, with an off-screen preview pane
 
@@ -131,7 +131,10 @@ end
 opt.errorbells = false -- No error sounds
 opt.backspace = "indent,eol,start" -- Sane backspace
 opt.autochdir = false -- Don't follow the buffer with :cd
-opt.iskeyword:append("-") -- Treat dash as part of a word
+-- NOTE: `-` is NOT added to 'iskeyword' globally. Doing so made `count-1`, `x->y` and
+-- `i-j` single "words" in C/C++/Python/JS, breaking `ciw`, `*`, `w` and completion. It is
+-- added only for CSS-like filetypes, where kebab-case identifiers are the norm -- see
+-- lua/config/autocmds.lua.
 opt.path:append("**") -- `gf` searches subdirectories
 opt.selection = "inclusive"
 opt.mouse = "a" -- Mouse support (dropbar's clickable winbar needs this)

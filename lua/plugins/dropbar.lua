@@ -26,8 +26,8 @@ return {
 			-- dropdown) requires -- without it that keypress reports "fzf-lib is not
 			-- installed". It's a C library, so `make` compiles it on install; everything
 			-- else in dropbar works fine if the build fails.
-			-- telescope.nvim is already here (xcodebuild depends on it), so this also
-			-- speeds up telescope's own sorting.
+			-- Despite the name it does NOT pull in telescope.nvim; it's a standalone C
+			-- fuzzy-matching library that dropbar borrows.
 			"nvim-telescope/telescope-fzf-native.nvim",
 			build = "make",
 		},
@@ -40,11 +40,6 @@ return {
 
 		-- Filetypes where a breadcrumb bar is noise rather than signal.
 		local exclude_filetypes = {
-			"DressingInput",
-			"DressingSelect",
-			"NvimTree",
-			"TelescopePrompt",
-			"alpha",
 			"checkhealth",
 			"dap-repl",
 			"dapui_breakpoints",
@@ -60,14 +55,12 @@ return {
 			"help",
 			"lazy",
 			"lspsagafinder",
+			"grug-far",
 			"mason",
-			"netrw",
 			"oil",
 			"qf",
-			"snacks_dashboard",
 			"toggleterm",
 			"trouble",
-			"undotree",
 		}
 
 		dropbar.setup({

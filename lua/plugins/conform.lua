@@ -92,6 +92,25 @@ return {
 		end,
 
 		formatters = {
+			-- With no .clang-format in the project, clang-format would silently use LLVM style
+			-- (2-space indent, 80 cols) while the editor indents with 4 -- so every save
+			-- re-indented what you'd just typed. Fall back to this config's own style instead,
+			-- which matches the c/cpp buffer options in lua/config/autocmds.lua.
+			-- A project's own .clang-format always takes priority.
+			clang_format = {
+				prepend_args = function(_, ctx)
+					if
+						vim.fs.find({ ".clang-format", "_clang-format" }, {
+							upward = true,
+							path = ctx.dirname,
+						})[1]
+					then
+						return {}
+					end
+					local style = vim.fs.joinpath(vim.fn.stdpath("config"), "templates", "cpp", ".clang-format")
+					return { "--style=file:" .. style }
+				end,
+			},
 			shfmt = {
 				prepend_args = { "-i", "2", "-ci" },
 			},

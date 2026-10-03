@@ -105,6 +105,17 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- kebab-case identifiers: make `-` part of a word so `ciw` / `*` / completion treat
+-- `margin-top` or `--my-var` as one token. Deliberately local -- globally it breaks
+-- expressions like `count-1` in every C-like language.
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("kebab_case_words"),
+	pattern = { "css", "scss", "sass", "less", "html" },
+	callback = function()
+		vim.opt_local.iskeyword:append("-")
+	end,
+})
+
 -- Go uses real tabs, always.
 vim.api.nvim_create_autocmd("FileType", {
 	group = augroup("go_options"),
@@ -114,6 +125,34 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.tabstop = 4
 		vim.opt_local.shiftwidth = 4
 		vim.opt_local.softtabstop = 4
+	end,
+})
+
+-- C / C++: Neovim's `cindent` (treesitter indent is skipped for these -- see
+-- lua/plugins/nvim-treesitter.lua), tuned to agree with templates/cpp/.clang-format so the
+-- indent you get while typing is the indent clang-format keeps on save.
+--   :s   case labels one level inside switch   (IndentCaseLabels: true)
+--   l1   case body aligns to the label, not to a `{` after it
+--   g0   public:/private: at the class's column  (AccessModifierOffset: -4)
+--   N-s  namespace bodies not indented          (NamespaceIndentation: None)
+--   E-s  extern "C" { } bodies not indented
+--   t0   return type on its own line not indented
+--   (0   continuation lines align after an open paren (AlignAfterOpenBracket: Align)
+--   Ws   ...or indent one level when the paren ends the line
+--   j1   lambdas / anonymous class bodies indent correctly
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("c_cpp_options"),
+	pattern = { "c", "cpp", "cuda" },
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+		vim.opt_local.indentexpr = ""
+		vim.opt_local.cindent = true
+		vim.opt_local.cinoptions = ":s,l1,g0,N-s,E-s,t0,(0,Ws,j1"
+		vim.opt_local.colorcolumn = "100" -- ColumnLimit in .clang-format
+		vim.opt_local.commentstring = "// %s"
 	end,
 })
 
@@ -142,11 +181,8 @@ vim.api.nvim_create_autocmd("FileType", {
 		"help",
 		"lspinfo",
 		"man",
-		"notify",
 		"qf",
 		"query",
-		"startuptime",
-		"tsplayground",
 	},
 	callback = function(args)
 		vim.bo[args.buf].buflisted = false

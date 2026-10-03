@@ -91,6 +91,10 @@ M.groups = {
 	rename = "\u{f0455} ", -- nf-md-rename_box
 	splits = "\u{f0bce} ", -- nf-md-view_split_vertical
 	diagnostics = "\u{f05d6} ", -- nf-md-alert_circle_outline
+	execute = "\u{f040a} ", -- nf-md-play
+	cmake = "\u{f05b7} ", -- nf-md-wrench
+	terminal = "\u{f018d} ", -- nf-md-console
+	session = "\u{f0193} ", -- nf-md-content_save
 }
 
 M.misc = {

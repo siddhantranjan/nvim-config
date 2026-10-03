@@ -98,8 +98,12 @@ M.on_attach = function(event)
 
 	-- ── Document highlight ──────────────────────────────────────────────────────────────
 	-- Underline other occurrences of the symbol under the cursor. mini.cursorword does a
-	-- textual version of this; the LSP version is semantic, so prefer it where available.
+	-- textual version of this; the LSP version is semantic, so it wins: cursorword is
+	-- switched off for this buffer (otherwise both highlight at once) and switched back on
+	-- if the server detaches.
 	if client:supports_method("textDocument/documentHighlight", bufnr) then
+		vim.b[bufnr].minicursorword_disable = true
+
 		local group = vim.api.nvim_create_augroup("LspDocumentHighlight_" .. bufnr, { clear = true })
 
 		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -117,8 +121,20 @@ M.on_attach = function(event)
 		vim.api.nvim_create_autocmd("LspDetach", {
 			group = group,
 			buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.clear_references()
+			callback = function(args)
+				-- LspDetach fires for every client; only tear down when the one leaving is
+				-- the last client on this buffer that provides document highlights.
+				local remaining = vim.tbl_filter(function(c)
+					return c.id ~= args.data.client_id
+				end, vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/documentHighlight" }))
+				if #remaining > 0 then
+					return
+				end
+
+				-- buf_clear_references(bufnr), not buf.clear_references(): the latter clears
+				-- whichever buffer is *current*, which isn't this one on :LspStop/:bwipe.
+				vim.lsp.util.buf_clear_references(bufnr)
+				vim.b[bufnr].minicursorword_disable = nil
 				pcall(vim.api.nvim_del_augroup_by_name, "LspDocumentHighlight_" .. bufnr)
 			end,
 		})
@@ -131,6 +147,13 @@ M.on_attach = function(event)
 	-- the module itself too: vim.lsp.document_color only exists from nvim 0.12 onward.
 	if vim.lsp.document_color and client:supports_method("textDocument/documentColor", bufnr) then
 		vim.lsp.document_color.enable(true, { bufnr = bufnr })
+	end
+
+	-- ── C / C++ (clangd) ────────────────────────────────────────────────────────────────
+	-- The commands are created by nvim-lspconfig's clangd on_attach.
+	if client.name == "clangd" then
+		map("n", "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", "C++: switch source/header")
+		map("n", "<leader>cI", "<cmd>LspClangdShowSymbolInfo<cr>", "C++: symbol info")
 	end
 
 	-- ── Flutter / Dart ──────────────────────────────────────────────────────────────────

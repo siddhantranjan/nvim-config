@@ -131,8 +131,13 @@ return {
 				},
 			}
 
+			-- Pre-fill with the binary <leader>eb builds for the current file (foo.cpp -> foo)
+			-- when it exists, so the common case is just <CR>. For one-keystroke
+			-- build+debug use <leader>ed (lua/utils/runner.lua).
 			local function pick_executable()
-				return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				local guess = vim.fn.expand("%:p:r")
+				local default = vim.fn.executable(guess) == 1 and guess or vim.fn.getcwd() .. "/"
+				return vim.fn.input("Path to executable: ", default, "file")
 			end
 
 			local codelldb_config = {
@@ -154,6 +159,12 @@ return {
 			-- NOTE: Rust debugging is owned by rustaceanvim, which registers its own
 			-- codelldb configuration derived from `cargo metadata`. Don't set
 			-- dap.configurations.rust here or the two will both appear in the picker.
+
+			-- ── overseer: launch.json `preLaunchTask` / `postDebugTask` support ───────
+			-- overseer is lazy (`dap = false` in its spec), so the hook is installed here.
+			pcall(function()
+				require("overseer").enable_dap()
+			end)
 
 			-- ── Auto open/close the UI ──────────────────────────────────────────────
 			dap.listeners.before.attach.dapui_config = function()

@@ -29,16 +29,20 @@ return {
 
 			spec = {
 				{ "<leader>b", group = "buffer", icon = icons.buffer },
-				{ "<leader>c", group = "code / AI", icon = icons.code },
+				{ "<leader>c", group = "code", icon = icons.code },
 				{ "<leader>d", group = "debug", icon = icons.debug },
+				{ "<leader>e", group = "execute (build / run / tasks)", icon = icons.execute },
+				{ "<leader>ec", group = "cmake", icon = icons.cmake },
 				{ "<leader>f", group = "find", icon = icons.find },
 				{ "<leader>g", group = "git", icon = icons.git },
 				{ "<leader>m", group = "mobile (flutter/xcode)", icon = icons.mobile },
 				{ "<leader>n", group = "notes", icon = icons.notes },
 				{ "<leader>o", group = "organize", icon = icons.organize },
 				{ "<leader>p", group = "paste / path", icon = icons.paste },
-				{ "<leader>r", group = "rename / resize / config", icon = icons.rename },
+				{ "<leader>r", group = "rename / replace / resize / config", icon = icons.rename },
 				{ "<leader>s", group = "splits", icon = icons.splits },
+				{ "<leader>t", group = "terminal", icon = icons.terminal },
+				{ "<leader>w", group = "workspace session", icon = icons.session },
 				{ "<leader>x", group = "diagnostics", icon = icons.diagnostics },
 
 				-- Standalone keys worth surfacing.

@@ -71,7 +71,7 @@ return {
 				section_separators = { left = icons.separators.left, right = icons.separators.right },
 				component_separators = { left = "|", right = "|" },
 				disabled_filetypes = {
-					statusline = { "alpha", "dashboard" },
+					statusline = {},
 					winbar = {},
 				},
 			},
@@ -112,6 +112,19 @@ return {
 				},
 				lualine_x = {
 					{ format_status, color = { fg = "#d19a66" } },
+					-- Number of running overseer tasks. A plain function component rather
+					-- than overseer's own "overseer" lualine component: lualine resolves
+					-- named components at setup, which would force overseer to load at
+					-- startup. This only touches overseer once something else loaded it.
+					{
+						function()
+							local running = require("overseer").list_tasks({ status = "RUNNING" })
+							return #running > 0 and (icons.groups.execute .. #running) or ""
+						end,
+						cond = function()
+							return package.loaded["overseer"] ~= nil
+						end,
+					},
 					{
 						flutter_status,
 						cond = function()
@@ -127,7 +140,16 @@ return {
 				lualine_z = { "location" },
 			},
 
-			extensions = { "lazy", "mason", "oil", "quickfix", "trouble", "fugitive", "nvim-dap-ui" },
+			extensions = {
+				"lazy",
+				"mason",
+				"oil",
+				"quickfix",
+				"trouble",
+				"fugitive",
+				"nvim-dap-ui",
+				"toggleterm",
+			},
 		})
 	end,
 }

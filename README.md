@@ -33,6 +33,7 @@ Toolchain-specific extras that Mason can't provide:
 
 | Stack | Needs |
 |---|---|
+| C / C++ | A system compiler (`xcode-select --install`) — clangd asks it for the standard-library headers. For projects, export real flags (`cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`) or run `:CppInit` to drop a starter `.clangd` + `.clang-format` in the root |
 | Swift / iOS | Xcode (supplies `sourcekit-lsp`), plus `xcbeautify`, `xcode-build-server`, `pymobiledevice3` |
 | Flutter / Dart | The Flutter SDK (supplies `dartls` and `dart format`) |
 | Rust | `rustup` (supplies `rust-analyzer` and `rustfmt`) |
@@ -54,6 +55,8 @@ lua/servers/              one file per LSP server; filename == server name
 lua/utils/
   lsp.lua                 buffer-local LSP mappings (LspAttach)
   diagnostics.lua         vim.diagnostic styling
+  runner.lua              context-aware build / run / debug (<leader>eb / ex / ed)
+templates/cpp/            default .clang-format and starter .clangd (:CppInit)
 ```
 
 **Adding a language server:** drop `lua/servers/<name>.lua` returning `function(capabilities)` that calls `vim.lsp.config("<name>", …)`, then add `"<name>"` to the list in `lua/servers/init.lua`. The filename, the name passed to `vim.lsp.config`, and the entry in the list must all match — the registry enables servers by name, so a mismatch means the config silently never applies.
@@ -71,6 +74,9 @@ Several concerns could plausibly be handled by more than one plugin here. They a
 | Dart LSP | `flutter-tools.nvim` | no `dartls` in `lua/servers/` |
 | Icons | `mini.icons` | mocks `nvim-web-devicons` for plugins that ask for it |
 | Trailing whitespace | `conform.nvim` (`_` formatter) | the old `BufWritePre` mini.trailspace autocmd |
+| C / C++ diagnostics | `clangd` (+ clang-tidy) | cpplint removed from efm |
+| Fuzzy picking | `fzf-lua` | xcodebuild's telescope integration |
+| Word-under-cursor highlight | LSP document highlight | `mini.cursorword` off in buffers whose server supports it |
 
 ## Leader map
 
@@ -79,14 +85,17 @@ Several concerns could plausibly be handled by more than one plugin here. They a
 | Prefix | Group |
 |---|---|
 | `<leader>b` | buffers |
-| `<leader>c` | code actions, Copilot Chat, formatting |
+| `<leader>c` | code actions, formatting, toggles |
 | `<leader>d` | debug (DAP) |
+| `<leader>e` | execute — `eb` build · `ex` run · `ed` debug (context-aware), `er` pick task, `el` restart last, `et` task list, `ec…` CMake |
 | `<leader>f` | find (fzf-lua) |
 | `<leader>g` | git (gitsigns, fugitive, diffview) |
 | `<leader>m` | mobile — Xcode globally, Flutter on Dart buffers |
 | `<leader>n` | notes (obsidian) |
-| `<leader>r` | rename, resize, config |
+| `<leader>r` | rename, project replace (`rg` / `rG` / `rf`, grug-far), resize, config |
 | `<leader>s` | splits |
+| `<leader>t` | terminal — `tt` float · `th` / `tv` split · `tl` send line/selection (<kbd>Ctrl</kbd>+<kbd>/</kbd> toggles from anywhere) |
+| `<leader>w` | workspace sessions — `ws` restore · `wl` last · `wS` select · `wd` don't save |
 | `<leader>x` | diagnostics (Trouble) |
 
 Standalone keys are kept out of those prefixes on purpose — a single mapping that shares a prefix with a group makes every key in that group wait out `timeoutlen` before firing:
@@ -95,7 +104,20 @@ Standalone keys are kept out of those prefixes on purpose — a single mapping t
 
 LSP navigation uses the standard `g` motions rather than `<leader>g…`, which belongs to git: `gd` peek definition, `gD` go to definition, `gy` peek type, `gO` outline, `K` hover. Neovim 0.11's own `grn` / `gra` / `grr` / `gri` defaults are left intact.
 
-Copilot lives on <kbd>Alt</kbd> (`<M-l>` accept, `<M-]>` / `<M-[>` cycle, `<M-h>` dismiss) so it doesn't contend with nvim-cmp's `<C-y>` and `<C-e>`.
+## Build, run, debug
+
+`<leader>eb` / `<leader>ex` / `<leader>ed` pick the right backend for the current buffer (`lua/utils/runner.lua`):
+
+| Context | Build / run / debug via |
+|---|---|
+| `CMakeLists.txt` in cwd | cmake-tools.nvim — configure exports `compile_commands.json` and links it into the root for clangd |
+| single C / C++ file | `clang++ -std=c++20 -g` (or `g++`) → `foo.cpp` builds `foo`; errors open in quickfix; runs in a terminal split; debugs with codelldb |
+| Python, Go, shell, Lua, JS, Ruby, Swift script | runs the file in a terminal split |
+| anything else | overseer templates — make, npm, cargo, just, `.vscode/tasks.json` |
+
+## Sessions
+
+Starting `nvim` with no file arguments restores the last session for that directory (and git branch). Sessions save on exit once a real file has been opened. `nvim file`, `nvim .` and piped input skip the restore.
 
 ## The winbar
 

@@ -10,8 +10,9 @@
 --   checks for them. `sourcekit-lsp` ships with Xcode and is configured in
 --   lua/servers/sourcekit.lua.
 --
---   This plugin uses telescope for its pickers -- that's why telescope.nvim is a dependency
---   here even though fzf-lua is the picker everywhere else.
+--   Pickers go through fzf-lua, like everywhere else in this config. xcodebuild used to
+--   require telescope, which pulled in a second fuzzy finder just for this plugin; it now
+--   supports fzf-lua, and telescope is disabled so it's never picked even if installed.
 -- LINKS :
 --   > github : https://github.com/wojciech-kulik/xcodebuild.nvim
 -- ================================================================================================
@@ -30,7 +31,7 @@ return {
 	},
 
 	dependencies = {
-		"nvim-telescope/telescope.nvim",
+		"ibhagwan/fzf-lua",
 		"MunifTanjim/nui.nvim",
 		"nvim-mini/mini.icons",
 		"mfussenegger/nvim-dap",
@@ -53,7 +54,15 @@ return {
 			-- when files are created or renamed through it.
 			oil_nvim = { enabled = true },
 			nvim_tree = { enabled = false },
-			quickfix = { show_errors_on_quickfix = true },
+			telescope_nvim = { enabled = false },
+			fzf_lua = { enabled = true },
+		},
+
+		-- Was `integrations.quickfix = { show_errors_on_quickfix = true }`, which isn't an
+		-- xcodebuild option and was silently ignored. These are the real keys.
+		quickfix = {
+			show_errors_on_quickfixlist = true,
+			show_warnings_on_quickfixlist = true,
 		},
 	},
 }

@@ -18,16 +18,18 @@ return function(capabilities)
 	local eslint_d = require("efmls-configs.linters.eslint_d") -- js/ts/react/svelte/vue
 	local shellcheck = require("efmls-configs.linters.shellcheck") -- bash
 	local hadolint = require("efmls-configs.linters.hadolint") -- docker
-	local cpplint = require("efmls-configs.linters.cpplint") -- c/cpp
 	local solhint = require("efmls-configs.linters.solhint") -- solidity
 	local rubocop = require("efmls-configs.linters.rubocop") -- ruby
 
 	-- NOTE: keys below are Neovim FILETYPES, not language names. `dockerfile` (not `docker`)
 	-- is the filetype Neovim assigns to a Dockerfile -- getting this wrong silently disables
 	-- the linter with no error message.
+	--
+	-- C / C++ are deliberately absent. cpplint enforces Google's style guide (copyright
+	-- headers, 80 columns, no `using namespace`, "include the directory when naming .h
+	-- files", ...) and reports all of it as diagnostics on perfectly valid code. clangd
+	-- already provides real compiler errors plus clang-tidy, so cpplint was pure noise.
 	local languages = {
-		c = { cpplint },
-		cpp = { cpplint },
 		dockerfile = { hadolint },
 		go = { go_revive },
 		javascript = { eslint_d },

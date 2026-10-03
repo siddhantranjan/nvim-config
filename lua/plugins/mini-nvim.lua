@@ -87,14 +87,12 @@ return {
 			vim.api.nvim_create_autocmd("FileType", {
 				pattern = {
 					"Trouble",
-					"alpha",
 					"checkhealth",
-					"dashboard",
+					"grug-far",
 					"help",
 					"lazy",
 					"mason",
 					"markdown",
-					"notify",
 					"oil",
 					"toggleterm",
 					"trouble",

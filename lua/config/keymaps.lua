@@ -8,11 +8,13 @@
 -- in that group stalls for 'timeoutlen' before firing:
 --
 --   <leader>b…  buffers            <leader>n…  notes (obsidian)
---   <leader>c…  code / AI chat     <leader>p…  paste-related
---   <leader>d…  debug (DAP)        <leader>r…  rename / resize / config
+--   <leader>c…  code               <leader>p…  paste-related
+--   <leader>d…  debug (DAP)        <leader>r…  rename / replace / resize / config
+--   <leader>e…  execute: build / run / tasks (overseer, cmake-tools)
 --   <leader>f…  find (fzf-lua)     <leader>s…  splits
---   <leader>g…  git                <leader>x…  diagnostics (trouble)
---   <leader>m…  mobile (flutter/xcode)
+--   <leader>g…  git                <leader>t…  terminal (toggleterm)
+--   <leader>m…  mobile             <leader>w…  workspace sessions (persistence)
+--                                  <leader>x…  diagnostics (trouble)
 --
 --   Singles deliberately kept OUT of those prefixes: h (nohl), q (oil), z (zen), ; (winbar),
 --   D (delete no-yank), k / K (diagnostics under cursor / line).
@@ -45,8 +47,8 @@ map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 
 -- ── Search ──────────────────────────────────────────────────────────────────────────────────
--- WAS <leader>c, which shadowed the entire <leader>c… group (CopilotChat, code action,
--- Trouble symbols) and made every one of them wait 500ms.
+-- WAS <leader>c, which shadowed the entire <leader>c… group (code action, Trouble symbols,
+-- ...) and made every one of them wait 500ms.
 map("n", "<leader>h", "<cmd>nohlsearch<cr>", { desc = "Clear search highlights" })
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlights" })
 
