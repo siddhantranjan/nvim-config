@@ -6,7 +6,7 @@
 --
 --   * Saved automatically on exit once at least one real file was opened.
 --   * Restored automatically when Neovim starts with no file arguments (`nvim` in a project
---     directory). `nvim file.cpp`, `nvim .` and piped stdin are left alone.
+--     directory). `nvim main.rs`, `nvim .` and piped stdin are left alone.
 --   * <leader>w… for manual control. <leader>wd stops saving for this run, e.g. before
 --     quitting from a throwaway layout you don't want remembered.
 --

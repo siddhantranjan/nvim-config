@@ -32,7 +32,6 @@ return {
 				{ "<leader>c", group = "code", icon = icons.code },
 				{ "<leader>d", group = "debug", icon = icons.debug },
 				{ "<leader>e", group = "execute (build / run / tasks)", icon = icons.execute },
-				{ "<leader>ec", group = "cmake", icon = icons.cmake },
 				{ "<leader>f", group = "find", icon = icons.find },
 				{ "<leader>g", group = "git", icon = icons.git },
 				{ "<leader>m", group = "mobile (flutter/xcode)", icon = icons.mobile },

@@ -5,8 +5,9 @@
 --   cargo, just, and `.vscode/tasks.json` tasks; `:OverseerRun` lists them.
 --
 --   <leader>eb / ex / ed are context-aware build / run / debug (see lua/utils/runner.lua):
---   CMake projects go through cmake-tools.nvim, single C/C++ files are compiled here with
---   errors sent to the quickfix list, scripts run in a terminal split.
+--   Rust goes through cargo (errors to the quickfix list, programs in a terminal split,
+--   debugging via rustaceanvim), scripts run in a terminal split, everything else falls
+--   back to overseer's templates.
 --
 --   `dap = false` so overseer can stay lazy; nvim-dap calls enable_dap() when it loads, which
 --   is what makes launch.json `preLaunchTask` work (see lua/plugins/nvim-dap-ui.lua).

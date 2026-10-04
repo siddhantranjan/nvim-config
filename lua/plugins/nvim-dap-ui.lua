@@ -119,7 +119,7 @@ return {
 				vim.fn.sign_define(name, opts)
 			end
 
-			-- ── codelldb adapter (C, C++, Rust, Swift) ──────────────────────────────
+			-- ── codelldb adapter (Swift; Rust gets its own from rustaceanvim) ───────
 			local codelldb = vim.fn.stdpath("data") .. "/mason/bin/codelldb"
 
 			dap.adapters.codelldb = {
@@ -131,13 +131,8 @@ return {
 				},
 			}
 
-			-- Pre-fill with the binary <leader>eb builds for the current file (foo.cpp -> foo)
-			-- when it exists, so the common case is just <CR>. For one-keystroke
-			-- build+debug use <leader>ed (lua/utils/runner.lua).
 			local function pick_executable()
-				local guess = vim.fn.expand("%:p:r")
-				local default = vim.fn.executable(guess) == 1 and guess or vim.fn.getcwd() .. "/"
-				return vim.fn.input("Path to executable: ", default, "file")
+				return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 			end
 
 			local codelldb_config = {
@@ -153,8 +148,6 @@ return {
 			}
 
 			dap.configurations.swift = codelldb_config
-			dap.configurations.c = codelldb_config
-			dap.configurations.cpp = codelldb_config
 
 			-- NOTE: Rust debugging is owned by rustaceanvim, which registers its own
 			-- codelldb configuration derived from `cargo metadata`. Don't set

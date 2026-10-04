@@ -4,7 +4,7 @@
 --   Project-wide search & replace -- the equivalent of VS Code's search sidebar with the
 --   replace box open. Runs ripgrep, shows every match in an editable buffer, previews the
 --   replacement live, and applies it across files. Supports regex, capture groups, file
---   globs (`*.cpp`) and path filters.
+--   globs (`*.rs`) and path filters.
 --
 --   Lives under <leader>r… (rename / replace). Inside the grug-far buffer, `g?` shows its
 --   keys; the main ones are <localleader>r (replace all) and <localleader>s (sync edits).

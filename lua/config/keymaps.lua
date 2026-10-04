@@ -10,7 +10,7 @@
 --   <leader>b…  buffers            <leader>n…  notes (obsidian)
 --   <leader>c…  code               <leader>p…  paste-related
 --   <leader>d…  debug (DAP)        <leader>r…  rename / replace / resize / config
---   <leader>e…  execute: build / run / tasks (overseer, cmake-tools)
+--   <leader>e…  execute: build / run / tasks (cargo, overseer)
 --   <leader>f…  find (fzf-lua)     <leader>s…  splits
 --   <leader>g…  git                <leader>t…  terminal (toggleterm)
 --   <leader>m…  mobile             <leader>w…  workspace sessions (persistence)

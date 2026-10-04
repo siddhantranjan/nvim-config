@@ -2,7 +2,7 @@
 -- TITLE : jsonls (JSON Language Server) LSP Setup
 -- ABOUT :
 --   Schemas come from SchemaStore.nvim (the schemastore.org catalogue VS Code uses), so
---   package.json, tsconfig.json, .eslintrc, CMakePresets.json and hundreds more get
+--   package.json, tsconfig.json, .eslintrc and hundreds more get
 --   validation, completion and hover docs automatically.
 -- LINKS :
 --   > github      : https://github.com/microsoft/vscode-json-languageservice

@@ -31,8 +31,6 @@ return {
 
 			local ensure_installed = {
 				"bash",
-				"c",
-				"cpp",
 				"css",
 				"dart",
 				"diff",
@@ -81,13 +79,6 @@ return {
 				treesitter.install(parsers_to_install)
 			end
 
-			-- Languages that keep Neovim's own indent engine instead of treesitter's. The
-			-- C/C++ indent queries on the `main` branch are still rough (access specifiers,
-			-- lambdas, continuation lines, `case` labels) and fought clang-format on every
-			-- save; `cindent` is mature and is tuned to match the bundled .clang-format in
-			-- lua/config/autocmds.lua.
-			local native_indent = { c = true, cpp = true, cuda = true }
-
 			-- Start highlighting + indent for any buffer whose language has a parser.
 			local group = vim.api.nvim_create_augroup("TreeSitterConfig", { clear = true })
 			vim.api.nvim_create_autocmd("FileType", {
@@ -103,9 +94,7 @@ return {
 					end
 
 					pcall(vim.treesitter.start, args.buf)
-					if not native_indent[args.match] then
-						vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-					end
+					vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 				end,
 			})
 		end,

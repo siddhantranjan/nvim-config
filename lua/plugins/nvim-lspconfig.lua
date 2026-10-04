@@ -47,7 +47,6 @@ return {
 				ensure_installed = {
 					-- Language servers
 					"bash-language-server",
-					"clangd",
 					"css-lsp",
 					"dockerfile-language-server",
 					"emmet-ls",
@@ -76,7 +75,6 @@ return {
 
 					-- Formatters
 					"black",
-					"clang-format",
 					"gofumpt",
 					"goimports",
 					"isort",

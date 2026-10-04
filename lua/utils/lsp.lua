@@ -149,13 +149,6 @@ M.on_attach = function(event)
 		vim.lsp.document_color.enable(true, { bufnr = bufnr })
 	end
 
-	-- ── C / C++ (clangd) ────────────────────────────────────────────────────────────────
-	-- The commands are created by nvim-lspconfig's clangd on_attach.
-	if client.name == "clangd" then
-		map("n", "<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", "C++: switch source/header")
-		map("n", "<leader>cI", "<cmd>LspClangdShowSymbolInfo<cr>", "C++: symbol info")
-	end
-
 	-- ── Flutter / Dart ──────────────────────────────────────────────────────────────────
 	-- Buffer-local, and deliberately mirrors the global Xcode <leader>m… mappings so the
 	-- same keys drive whichever mobile toolchain the current file belongs to.

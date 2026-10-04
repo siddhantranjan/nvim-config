@@ -132,7 +132,7 @@ opt.errorbells = false -- No error sounds
 opt.backspace = "indent,eol,start" -- Sane backspace
 opt.autochdir = false -- Don't follow the buffer with :cd
 -- NOTE: `-` is NOT added to 'iskeyword' globally. Doing so made `count-1`, `x->y` and
--- `i-j` single "words" in C/C++/Python/JS, breaking `ciw`, `*`, `w` and completion. It is
+-- `i-j` single "words" in Rust/Python/JS, breaking `ciw`, `*`, `w` and completion. It is
 -- added only for CSS-like filetypes, where kebab-case identifiers are the norm -- see
 -- lua/config/autocmds.lua.
 opt.path:append("**") -- `gf` searches subdirectories

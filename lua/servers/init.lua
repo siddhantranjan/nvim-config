@@ -19,7 +19,6 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 -- Language servers, by module/server name.
 local servers = {
 	"bashls",
-	"clangd",
 	"cssls",
 	"dockerls",
 	"emmet_ls",
@@ -32,6 +31,7 @@ local servers = {
 	"solidity_ls_nomicfoundation",
 	"sourcekit",
 	"tailwindcss",
+	"taplo",
 	"ts_ls",
 	"yamlls",
 }

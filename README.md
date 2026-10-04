@@ -33,10 +33,9 @@ Toolchain-specific extras that Mason can't provide:
 
 | Stack | Needs |
 |---|---|
-| C / C++ | A system compiler (`xcode-select --install`) — clangd asks it for the standard-library headers. For projects, export real flags (`cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`) or run `:CppInit` to drop a starter `.clangd` + `.clang-format` in the root |
 | Swift / iOS | Xcode (supplies `sourcekit-lsp`), plus `xcbeautify`, `xcode-build-server`, `pymobiledevice3` |
 | Flutter / Dart | The Flutter SDK (supplies `dartls` and `dart format`) |
-| Rust | `rustup` (supplies `rust-analyzer` and `rustfmt`) |
+| Rust | `rustup` — then `rustup component add rust-analyzer rustfmt clippy` (see [Rust](#rust)) |
 | Ruby | `ruby-lsp` via asdf — the config looks for `~/.asdf/shims/ruby-lsp` and skips the server cleanly if it's absent |
 
 ## Layout
@@ -56,7 +55,6 @@ lua/utils/
   lsp.lua                 buffer-local LSP mappings (LspAttach)
   diagnostics.lua         vim.diagnostic styling
   runner.lua              context-aware build / run / debug (<leader>eb / ex / ed)
-templates/cpp/            default .clang-format and starter .clangd (:CppInit)
 ```
 
 **Adding a language server:** drop `lua/servers/<name>.lua` returning `function(capabilities)` that calls `vim.lsp.config("<name>", …)`, then add `"<name>"` to the list in `lua/servers/init.lua`. The filename, the name passed to `vim.lsp.config`, and the entry in the list must all match — the registry enables servers by name, so a mismatch means the config silently never applies.
@@ -74,7 +72,8 @@ Several concerns could plausibly be handled by more than one plugin here. They a
 | Dart LSP | `flutter-tools.nvim` | no `dartls` in `lua/servers/` |
 | Icons | `mini.icons` | mocks `nvim-web-devicons` for plugins that ask for it |
 | Trailing whitespace | `conform.nvim` (`_` formatter) | the old `BufWritePre` mini.trailspace autocmd |
-| C / C++ diagnostics | `clangd` (+ clang-tidy) | cpplint removed from efm |
+| Rust diagnostics | rust-analyzer running clippy on save | no Rust linter in efm |
+| Cargo.toml | crates.nvim (versions, features) + taplo (schema) | — |
 | Fuzzy picking | `fzf-lua` | xcodebuild's telescope integration |
 | Word-under-cursor highlight | LSP document highlight | `mini.cursorword` off in buffers whose server supports it |
 
@@ -87,7 +86,7 @@ Several concerns could plausibly be handled by more than one plugin here. They a
 | `<leader>b` | buffers |
 | `<leader>c` | code actions, formatting, toggles |
 | `<leader>d` | debug (DAP) |
-| `<leader>e` | execute — `eb` build · `ex` run · `ed` debug (context-aware), `er` pick task, `el` restart last, `et` task list, `ec…` CMake |
+| `<leader>e` | execute — `eb` build · `ex` run · `ed` debug (context-aware), `er` pick task, `el` restart last, `et` task list |
 | `<leader>f` | find (fzf-lua) |
 | `<leader>g` | git (gitsigns, fugitive, diffview) |
 | `<leader>m` | mobile — Xcode globally, Flutter on Dart buffers |
@@ -110,10 +109,34 @@ LSP navigation uses the standard `g` motions rather than `<leader>g…`, which b
 
 | Context | Build / run / debug via |
 |---|---|
-| `CMakeLists.txt` in cwd | cmake-tools.nvim — configure exports `compile_commands.json` and links it into the root for clangd |
-| single C / C++ file | `clang++ -std=c++20 -g` (or `g++`) → `foo.cpp` builds `foo`; errors open in quickfix; runs in a terminal split; debugs with codelldb |
+| Rust file in a Cargo project | `cargo build` (errors → quickfix) · `cargo run` in a terminal split · `:RustLsp debuggables` (codelldb) |
+| standalone `.rs` file | `rustc -g` → `main.rs` builds `main` next to it; runs / debugs the same way |
 | Python, Go, shell, Lua, JS, Ruby, Swift script | runs the file in a terminal split |
 | anything else | overseer templates — make, npm, cargo, just, `.vscode/tasks.json` |
+
+## Rust
+
+**Full guide: [docs/rust.md](docs/rust.md)** — setup, everyday workflow, debugging, Cargo.toml, every key, troubleshooting.
+
+One-time toolchain install (Mason deliberately doesn't manage these, so they always match your compiler):
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh   # or: brew install rustup && rustup-init
+rustup component add rust-analyzer rustfmt clippy
+```
+
+`codelldb` (debugger) and `taplo` (TOML) come from Mason automatically.
+
+New project: `cargo new hello && cd hello && nvim src/main.rs`, then `<leader>ex` to run.
+
+| Feature | Provided by |
+|---|---|
+| completion, go-to, rename, inlay hints, clippy on save | rust-analyzer via rustaceanvim |
+| format on save | rustfmt via conform (edition read from `Cargo.toml`) |
+| Cargo.toml: latest versions, upgrades, feature flags | crates.nvim — `K` hover, `<leader>ca` actions, `<leader>cu`/`cU` upgrade |
+| Cargo.toml: key/typo validation | taplo + schemastore.org |
+| debug | codelldb via rustaceanvim — `<leader>ed`, breakpoints with `<leader>db` |
+| Rust-only keys | `<leader>cR` runnables · `cT` testables · `cx` expand macro · `cE` explain error · `cr` full diagnostic · `cD` docs.rs · `cC` open Cargo.toml · `ck` hover actions |
 
 ## Sessions
 

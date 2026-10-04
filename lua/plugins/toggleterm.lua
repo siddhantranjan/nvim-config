@@ -9,7 +9,7 @@
 --   program, so vim/lazygit/fzf inside the terminal keep working), then <C-h/j/k/l> moves
 --   between windows as usual.
 --
---   Also used by lua/utils/runner.lua (<leader>ex) and cmake-tools.nvim to run programs.
+--   Also used by lua/utils/runner.lua (<leader>ex) to run programs.
 -- LINKS :
 --   > github : https://github.com/akinsho/toggleterm.nvim
 -- ================================================================================================

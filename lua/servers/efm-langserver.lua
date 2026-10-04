@@ -25,10 +25,8 @@ return function(capabilities)
 	-- is the filetype Neovim assigns to a Dockerfile -- getting this wrong silently disables
 	-- the linter with no error message.
 	--
-	-- C / C++ are deliberately absent. cpplint enforces Google's style guide (copyright
-	-- headers, 80 columns, no `using namespace`, "include the directory when naming .h
-	-- files", ...) and reports all of it as diagnostics on perfectly valid code. clangd
-	-- already provides real compiler errors plus clang-tidy, so cpplint was pure noise.
+	-- Rust is deliberately absent: rust-analyzer already runs clippy on save
+	-- (rustaceanvim), so a second linter would only duplicate its diagnostics.
 	local languages = {
 		dockerfile = { hadolint },
 		go = { go_revive },
